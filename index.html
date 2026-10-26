@@ -1,26 +1,145 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Throne8</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#fff;--fg:#0f172a;--mut:#64748b;--card:#f1f5f9;--ac:#1f3a5f;--bad:#b91c1c;--bd:#cbd5e1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f172a;--fg:#e2e8f0;--mut:#94a3b8;--card:#1e293b;--ac:#60a5fa;--bad:#f87171;--bd:#334155;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f172a;--fg:#e2e8f0;--mut:#94a3b8;--card:#1e293b;--ac:#60a5fa;--bad:#f87171;--bd:#334155;color-scheme:dark}
+html,body{margin:0}body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif;user-select:none;-webkit-user-select:none}
+main{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:20px;color:var(--ac);margin:0 0 8px}.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin:12px 0}
+input,textarea,select{width:100%;box-sizing:border-box;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:6px;padding:8px;font:inherit;user-select:text;-webkit-user-select:text}
+textarea.code{font:13px/1.4 ui-monospace,Menlo,monospace;min-height:170px;tab-size:2}
+button{background:var(--ac);color:var(--bg);border:0;border-radius:6px;padding:8px 14px;font:inherit;cursor:pointer;margin:4px 4px 0 0}button.g{background:var(--card);color:var(--fg);border:1px solid var(--bd)}
+pre{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:8px;overflow-x:auto;white-space:pre-wrap;margin:6px 0}
+iframe{width:100%;height:160px;border:1px solid var(--bd);border-radius:6px;background:#fff}
+#bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:1px solid var(--bd);padding:8px 16px;display:flex;justify-content:space-between;z-index:5}
+#wm{position:fixed;inset:0;pointer-events:none;z-index:9;opacity:.09;font:600 15px sans-serif;overflow:hidden;line-height:56px;transform:rotate(-20deg) scale(1.6);word-break:break-all}
+.blur main{filter:blur(14px)}.bad{color:var(--bad)}.mut{color:var(--mut);font-size:13px}label.o{display:block;padding:3px 0;cursor:pointer}
+</style></head><body>
+<main id="app"><h1>Loading…</h1></main><div id="wm"></div>
+<script>
+const $=s=>document.querySelector(s),app=$("#app");
+const el=(t,p={},...k)=>{const e=document.createElement(t);for(const[a,v]of Object.entries(p))a==="on"?Object.entries(v).forEach(([x,f])=>e.addEventListener(x,f)):a in e&&a!=="list"?e[a]=v:e.setAttribute(a,v);k.flat().forEach(c=>e.append(c));return e};
+const OUT="What is the output?";
+const SAMPLE={title:"Web Development & JavaScript Assessment (Intermediate)",minutes:120,maxViolations:3,questions:[
+{s:"SECTION A · Conceptual MCQs (1 mark each)",t:"mcq",q:"Which HTML element is semantically most appropriate for the main content of a webpage?",o:["<div>","<main>","<span>","<footer>"],a:1},
+{t:"mcq",q:"Which CSS selector has the highest specificity among the following?",o:["p",".content","#content","div p"],a:2},
+{t:"mcq",q:"What happens when you try to reassign a value to a variable declared using const?",o:["The value changes successfully.","The variable becomes undefined.","JavaScript throws a TypeError.","JavaScript converts it into let."],a:2},
+{t:"mcq",q:OUT,c:"console.log(typeof null);",o:["\"null\"","\"undefined\"","\"object\"","\"boolean\""],a:2},
+{t:"mcq",q:OUT,c:"console.log(\"5\" + 2);\nconsole.log(\"5\" - 2);",o:["7 and 3","\"52\" and 3","\"52\" and \"52\"","7 and \"3\""],a:1},
+{t:"mcq",q:OUT,c:"console.log(5 == \"5\");\nconsole.log(5 === \"5\");",o:["true, true","false, false","true, false","false, true"],a:2},
+{t:"mcq",q:"Which value is truthy in JavaScript?",o:["\"\"","0","NaN","\"false\""],a:3},
+{t:"mcq",q:OUT,c:"console.log(Boolean([]));\nconsole.log(Boolean({}));",o:["false, false","true, true","true, false","false, true"],a:1},
+{t:"mcq",q:OUT,c:"console.log(10 > 5 && 3 < 1);",o:["true","false","undefined","1"],a:1},
+{t:"mcq",q:"How many times will this loop execute?",c:"for (let i = 2; i <= 10; i += 2) {\n    console.log(i);\n}",o:["4 times","5 times","6 times","10 times"],a:1},
+{t:"mcq",q:"Which statement about while and do...while is correct?",o:["Both always execute at least once.","A while loop always executes first.","A do...while loop executes its body at least once.","Neither checks a condition."],a:2},
+{t:"mcq",q:OUT,c:"let x = 0;\n\nif (x) {\n    console.log(\"A\");\n} else {\n    console.log(\"B\");\n}",o:["A","B","0","No output"],a:1},
+{t:"mcq",q:"Which CSS declaration makes an element a flex container?",o:["position: flex;","display: flex;","flex: display;","layout: flex;"],a:1},
+{t:"mcq",q:OUT,c:"console.log(2 + 3 * 4);",o:["20","14","24","9"],a:1},
+{t:"mcq",q:"Which HTML attribute provides alternative text for an image?",o:["title","href","alt","srcset"],a:2},
+{s:"SECTION B · Short Answers (1 mark each)",t:"text",q:"What is the difference between == and ===?"},
+{t:"text",q:"Why does typeof null return \"object\" in JavaScript?"},
+{t:"text",q:"Write one difference between let and var."},
+{t:"text",q:"Write any two falsy values other than false."},
+{t:"text",q:"What is the difference between a parameter and an argument?"},
+{t:"text",q:"What is the purpose of the alt attribute in an <img> tag?"},
+{t:"text",q:"What is the difference between inline CSS and external CSS?"},
+{t:"text",q:"What does the modulus (%) operator return?"},
+{t:"text",q:"What is an infinite loop?"},
+{t:"text",q:"What is the difference between && and ||?"},
+{s:"SECTION C · Output Prediction (1 mark each). Write the exact output.",t:"out",q:OUT,c:"let a = \"10\";\nlet b = 5;\n\nconsole.log(a + b);\nconsole.log(a - b);"},
+{t:"out",q:OUT,c:"let x = 0;\n\nconsole.log(x || 100);\nconsole.log(x ?? 100);"},
+{t:"out",q:OUT,c:"let i = 1;\n\nwhile (i < 4) {\n    console.log(i);\n    i++;\n}"},
+{t:"out",q:OUT,c:"console.log(Boolean(\" \"));\nconsole.log(Boolean(NaN));"},
+{t:"out",q:OUT,c:"let marks = 75;\n\nif (marks >= 90) {\n    console.log(\"A\");\n} else if (marks >= 60) {\n    console.log(\"B\");\n} else {\n    console.log(\"C\");\n}"},
+{s:"SECTION D · Practical Coding (4 marks each)",t:"html",q:"Responsive Profile Card (HTML & CSS): a student profile card with a heading (student name), a paragraph (course name) and a button labelled \"View Profile\". Use semantic HTML; center the card horizontally and vertically using Flexbox; give the card a border, padding, rounded corners and a subtle shadow; add a hover effect on the button that changes its background color."},
+{t:"js",q:"Electricity Bill Calculator: first 100 units ₹5 per unit, next 100 units ₹7 per unit, units above 200 ₹10 per unit. Store the units in a variable, use if-else if-else, calculate the total using the applicable rate for each slab and print the final bill. Example: 250 units gives ₹1,700."},
+{t:"js",q:"FizzBuzz: print numbers from 1 to 30 using a loop. Divisible by both 3 and 5 prints \"FizzBuzz\"; only by 3 prints \"Fizz\"; only by 5 prints \"Buzz\"; otherwise print the number. Check the both-3-and-5 case first."},
+{t:"js",q:"Largest of Three Numbers: find the largest among a, b and c using if-else if-else, handling cases where two or all three are equal, and print the largest value. Example: a = 25, b = 40, c = 15 prints Largest: 40."},
+{t:"js",q:"Truthy and Falsy Logic: (a) What is the output of the program below? (1) (b) Modify it so the username is non-empty, the password has at least 5 characters, and isActive is true; print \"Login Successful\" only if all three hold. (2) (c) Change username to \"admin\" and state the expected output. (1). Write the answers to (a) and (c) as comments.",c:"let username = \"\";\nlet password = \"12345\";\nlet isActive = true;\n\nif (username && password && isActive) {\n    console.log(\"Login Successful\");\n} else {\n    console.log(\"Login Failed\");\n}"}]};
+let db,user,uid,cfg=SAMPLE,S={ans:{},viol:[],on:false,done:false},isT=false,timer;
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
-<body>
-
-
-
-
-    <form action="">
-        <input type="text" name="name" placeholder="Name">
-
-        <input type="checkbox"> HTML
-        <input type="checkbox"> CSS
-        <input type="file"> JavaScript
-        <input type="text" value="Hemendra">
-        <input type="text" value="Hemendra" readonly>
-    </form>
-</body>
-
-</html>
+async function init(){
+ try{db=await claude.use("db");user=await claude.use("user");uid=user?await user.id():null;isT=user?user.isOwner():false}catch(e){}
+ if(db){try{const d=await db.doc("config/test").get();if(d.exists)cfg=d.data()}catch(e){}}
+ home();
+}
+function home(){
+ app.replaceChildren(el("h1",{},cfg.title),
+  el("div",{className:"card"},el("p",{},cfg.questions.length+" questions · "+cfg.minutes+" minutes. The test runs in full screen. Switching tabs, leaving full screen, copy/paste and screenshots are logged. After "+cfg.maxViolations+" violations the test is submitted automatically.")),
+  el("div",{className:"card"},el("input",{id:"nm",placeholder:"Full name"}),el("div",{style:"height:8px"}),el("input",{id:"rl",placeholder:"Roll number"}),
+   el("button",{on:{click:start}},"Start test")),
+  isT?el("button",{className:"g",on:{click:teacher}},"Teacher panel"):"");
+}
+async function start(){
+ const n=$("#nm").value.trim(),r=$("#rl").value.trim();if(!n||!r)return alert("Enter name and roll number");
+ S={ans:{},viol:[],on:true,done:false,n,r,t0:Date.now()};
+ try{await document.documentElement.requestFullscreen()}catch(e){}
+ $("#wm").textContent=(n+" · "+r+" · ").repeat(260);
+ S.end=Date.now()+cfg.minutes*6e4;timer=setInterval(tick,1000);test();
+}
+function tick(){const s=Math.max(0,Math.round((S.end-Date.now())/1e3));const t=$("#tm");if(t)t.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0");if(!s)submit("time up")}
+function flag(why){
+ if(!S.on||S.done)return;S.viol.push({why,at:new Date().toISOString()});
+ const v=$("#vc");if(v)v.textContent=S.viol.length+"/"+cfg.maxViolations;
+ if(S.viol.length>=cfg.maxViolations)submit("too many violations");else alert("Warning "+S.viol.length+"/"+cfg.maxViolations+": "+why);
+}
+function test(){
+ const qs=cfg.questions.map((q,i)=>{
+  const b=el("div",{className:"card"},el("b",{},"Q"+(i+1)+". "),q.q);
+  if(q.s)b.prepend(el("div",{className:"mut",style:"font-weight:700;margin-bottom:6px"},q.s));
+  if(q.c)b.append(el("pre",{},q.c));
+  if(q.t==="mcq")q.o.forEach((o,j)=>b.append(el("label",{className:"o"},el("input",{type:"radio",name:"q"+i,style:"width:auto;margin-right:8px",on:{change:()=>S.ans[i]=j}}),o)));
+  else if(q.t==="text"||q.t==="out"){const ta=el("textarea",{style:"min-height:64px",placeholder:"Write your answer",on:{input:()=>S.ans[i]=ta.value}});b.append(ta)}
+  else{const ta=el("textarea",{className:"code",spellcheck:false,placeholder:q.t==="html"?"Write HTML + CSS":"Write JavaScript",on:{input:()=>S.ans[i]=ta.value,keydown:e=>{if(e.key==="Tab"){e.preventDefault();document.execCommand("insertText",false,"  ")}}}});
+   const out=el("pre",{},"Output appears here");const fr=el("iframe",{sandbox:"allow-scripts",style:"display:none"});
+   b.append(ta,el("button",{on:{click:()=>run(q.t,ta.value,i,out,fr)}},"▶ Run"),q.t==="html"?fr:out);
+   if(q.t==="html"){out.style.display="none"}}
+  return b});
+ app.replaceChildren(el("div",{id:"bar"},el("b",{},cfg.title),el("span",{},"Time ",el("b",{id:"tm"})," · Violations ",el("b",{id:"vc",className:"bad"},"0/"+cfg.maxViolations))),...qs,el("button",{on:{click:()=>confirm("Submit the test?")&&submit("student")}},"Submit test"));tick();
+}
+function run(t,c,i,out,fr){
+ if(t==="html"){fr.style.display="block";fr.srcdoc=c;return}
+ out.textContent="Running…";const f=el("iframe",{sandbox:"allow-scripts",style:"display:none"});
+ const h=e=>{if(e.source===f.contentWindow){out.textContent=e.data.o||"(no output)";removeEventListener("message",h);f.remove()}};
+ addEventListener("message",h);setTimeout(()=>{if(f.isConnected){out.textContent="Timed out (infinite loop?)";f.remove()}},4000);
+ f.srcdoc="<script>const o=[];console.log=(...a)=>o.push(a.map(x=>typeof x==='object'?JSON.stringify(x):String(x)).join(' '));try{"+c.replace(/<\/script/gi,"<\\/script")+"\n}catch(e){o.push('Error: '+e.message)}parent.postMessage({o:o.join('\\n')},'*')<\/script>";
+ document.body.append(f);
+}
+async function submit(why){
+ if(S.done)return;S.done=true;S.on=false;clearInterval(timer);if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+ const rec={n:S.n,r:S.r,why,ans:S.ans,viol:S.viol,secs:Math.round((Date.now()-S.t0)/1e3),at:new Date().toISOString()};
+ let saved=false;if(db&&uid){try{await db.doc("submissions/"+uid).set(rec);saved=true}catch(e){}}
+ app.replaceChildren(el("h1",{},"Test submitted"),el("div",{className:"card"},el("p",{},"Reason: "+why+" · Violations: "+S.viol.length),
+  el("p",{className:saved?"":"bad"},saved?"Your answers were saved. You can close this page.":"Could not save online. Download your file and give it to the teacher."),
+  saved?"":el("button",{on:{click:async()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(rec,null,1)],{type:"application/json"}));a.download="submission_"+S.r+".json";a.click()}}},"Download submission")));
+}
+function teacher(){
+ const ta=el("textarea",{className:"code",style:"min-height:200px"},JSON.stringify(cfg,null,1));
+ const list=el("div",{},"Loading submissions…");
+ app.replaceChildren(el("h1",{},"Teacher panel"),el("button",{className:"g",on:{click:home}},"← Back"),
+  el("div",{className:"card"},el("b",{},"Test settings (JSON: title, minutes, maxViolations, questions)"),ta,
+   el("p",{className:"mut"},"Question types: mcq {q,o:[…],a:index}, js {q}, html {q}."),
+   el("button",{on:{click:async()=>{try{cfg=JSON.parse(ta.value);await db.doc("config/test").set(cfg);alert("Saved")}catch(e){alert("Error: "+e.message)}}}},"Save test")),
+  el("div",{className:"card"},el("b",{},"Submissions"),list));
+ if(!db)return;db.collection("submissions").onSnapshot(s=>{
+  const rows=s.docs.map(d=>d.data());list.replaceChildren(rows.length?"":"No submissions yet",...rows.map(x=>{
+   let sc=0,m=0;cfg.questions.forEach((q,i)=>{if(q.t==="mcq"){m++;if(x.ans[i]===q.a)sc++}});
+   const det=el("div",{style:"display:none"},el("p",{className:"bad"},x.viol.map(v=>v.why+" @ "+v.at.slice(11,19)).join(" | ")||"No violations"),
+    ...cfg.questions.map((q,i)=>q.t==="mcq"?"":el("div",{},el("b",{},"Q"+(i+1)),el("pre",{},x.ans[i]||"(blank)"))));
+   return el("div",{className:"card"},el("b",{},x.n+" ("+x.r+")")," · MCQ "+sc+"/"+m+" · violations "+x.viol.length+" · "+x.secs+"s · "+x.why,
+    el("button",{className:"g",on:{click:()=>det.style.display=det.style.display==="none"?"block":"none"}},"View"),det)}))});
+}
+// ---- Anti-cheat ----
+document.addEventListener("visibilitychange",()=>document.hidden&&flag("Tab switched / window hidden"));
+addEventListener("blur",()=>{if(S.on){document.body.classList.add("blur");flag("Window lost focus")}});
+addEventListener("focus",()=>document.body.classList.remove("blur"));
+document.addEventListener("fullscreenchange",()=>S.on&&!document.fullscreenElement&&flag("Left full screen"));
+["copy","cut","paste","contextmenu","dragstart"].forEach(e=>document.addEventListener(e,x=>{if(S.on){x.preventDefault();flag("Blocked: "+e)}}));
+document.addEventListener("keydown",e=>{if(!S.on)return;const k=e.key.toLowerCase();
+ if(e.key==="F12"||(e.ctrlKey||e.metaKey)&&(["c","v","x","p","s","u","a"].includes(k)&&!(k==="a"&&e.target.tagName==="TEXTAREA")||e.shiftKey&&["i","j","c"].includes(k))){e.preventDefault();flag("Blocked shortcut")}});
+document.addEventListener("keyup",e=>{if(S.on&&(e.key==="PrintScreen"||e.metaKey&&e.shiftKey)){navigator.clipboard&&navigator.clipboard.writeText("").catch(()=>{});flag("Screenshot attempt")}});
+addEventListener("beforeunload",e=>{if(S.on){e.preventDefault();e.returnValue=""}});
+init();
+</script></body></html>
